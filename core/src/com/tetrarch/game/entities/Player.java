@@ -2,16 +2,11 @@ package com.tetrarch.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.tetrarch.game.Tetrarch;
 import com.tetrarch.game.world.GameMap;
-
-import java.awt.DisplayMode;
 
 public class Player extends Entity {
 
@@ -19,12 +14,29 @@ public class Player extends Entity {
     private int sens = 0;
     private float speed = 0;
     private final static int JUMP_VELOCITY = 5;
+    private String name;
 
     Sprite image;
 
     public Player(String id, float x, float y, EntityType type, GameMap map){
         super.create(id, x, y, type, map);
 
+        image = new Sprite();
+        try {
+            this.image.setRegion(new Texture("entities/player.png"));
+        }catch (Exception e){
+            Gdx.app.postRunnable(new Runnable(){
+                @Override
+                public void run() {
+                    image.setRegion(new Texture("entities/player.png"));
+                }
+            });
+        }
+    }
+
+    public Player(String id, float x, float y, EntityType type, GameMap map, String name){
+        super.create(id, x, y, type, map);
+        this.name = name;
         image = new Sprite();
         try {
             this.image.setRegion(new Texture("entities/player.png"));
@@ -111,6 +123,17 @@ public class Player extends Entity {
                 moveX((int) (speed * sens * deltaTime));
             }
         }
+    }
+
+    public String getName() {
+        if (name!=null)
+            return name;
+        return "NULL_PLAYER_NAME";
+    }
+
+    public void setName(String name) {
+        if (name!=null && name!="")
+            this.name = name;
     }
 
     private void acceleration(){

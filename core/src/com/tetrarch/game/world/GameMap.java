@@ -1,12 +1,9 @@
 package com.tetrarch.game.world;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tetrarch.game.entities.Entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class GameMap {

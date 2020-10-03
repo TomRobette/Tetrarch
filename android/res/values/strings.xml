@@ -2,5 +2,8 @@
 <resources>
 
     <string name="app_name">Tetrarch</string>
+    <string name="choose_name">Choose your name</string>
+    <string name="your_name">Your name</string>
+    <string name="validate">Validate</string>
 
 </resources>

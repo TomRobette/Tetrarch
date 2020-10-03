@@ -1,11 +1,10 @@
 package com.tetrarch.game;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tetrarch.game.entities.EntityType;
 import com.tetrarch.game.entities.Player;
@@ -29,11 +28,15 @@ public class Tetrarch extends ApplicationAdapter {
 	GameMap map;
 	public static OrthographicCamera cam;
 	public static Player player;
+	protected static String pseudo;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		map = new TiledGameMap();
+		Gdx.app.log("Debug", "My name: " + pseudo);
+		Preferences prefs = Gdx.app.getPreferences("My Preferences");
+		prefs.putString("player_name", pseudo);
 //		map.addEntity(new Player("a", 800, 50, EntityType.PLAYER, map));
 		connectSocket();
 		configSocketEvents();
@@ -167,5 +170,28 @@ public class Tetrarch extends ApplicationAdapter {
 				Gdx.app.log("SOCKET.IO", "Error sending update data");
 			}
 		}
+	}
+
+	public static void setPlayerName(String name){
+		if (player!=null){
+			player.setName(name);
+		}
+		pseudo=name;
+	}
+
+	public static String getPlayerName(){
+		if (player!=null){
+			return player.getName();
+		}else {
+			if (pseudo!=null){
+				return pseudo;
+			}else{
+				return "NULL_PLAYER_NAME";
+			}
+		}
+	}
+
+	protected static String getNameFromPrefs(){
+		return Gdx.app.getPreferences("My Preferences").getString("player_name");
 	}
 }

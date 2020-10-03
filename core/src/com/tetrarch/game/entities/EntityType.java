@@ -1,9 +1,5 @@
 package com.tetrarch.game.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.tetrarch.game.world.GameMap;
-
 import java.util.HashMap;
 
 public enum EntityType {
