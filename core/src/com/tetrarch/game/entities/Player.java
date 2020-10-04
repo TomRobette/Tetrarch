@@ -1,5 +1,6 @@
 package com.tetrarch.game.entities;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +16,7 @@ public class Player extends Entity {
     private float speed = 0;
     private final static int JUMP_VELOCITY = 5;
     private String name;
+    private float multZoom = 3;
 
     Sprite image;
 
@@ -78,6 +80,12 @@ public class Player extends Entity {
 
         if (id.equals(Tetrarch.player.id)){
             boolean keyPressed = false;
+            if (Gdx.input.isKeyPressed(Input.Keys.O)){
+                multZoom-=0.1;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.L)){
+                multZoom+=0.1;
+            }
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)){
                 keyPressed = true;
                 sens=-1;
@@ -151,9 +159,15 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch batch) {
-        if (image!=null)
+        if (image!=null) {
             batch.draw(image, pos.x, pos.y, getWidth(), getHeight());
-            if (id.equals(Tetrarch.player.id))
+            if (id.equals(Tetrarch.player.id)) {
                 Tetrarch.cam.position.set(pos.x, pos.y, 0);
+                if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
+                    Tetrarch.cam.viewportWidth = Gdx.graphics.getWidth() / multZoom;
+                    Tetrarch.cam.viewportHeight = Gdx.graphics.getHeight() / multZoom;
+                }
+            }
+        }
     }
 }

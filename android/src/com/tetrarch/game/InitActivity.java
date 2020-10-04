@@ -43,7 +43,7 @@ public class InitActivity extends AppCompatActivity {
                 try {
                     String pseudo = textZone.getText().toString();
                     Tetrarch.setPlayerName(pseudo);
-                    startActivity(new Intent(InitActivity.this, AndroidLauncher.class));
+                    startActivity(new Intent(InitActivity.this, ConnectActivity.class));
                     finish();
                 }catch (Exception e){
                     alertText.setText("Error while saving name");

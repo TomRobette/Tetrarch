@@ -5,5 +5,9 @@
     <string name="choose_name">Choose your name</string>
     <string name="your_name">Your name</string>
     <string name="validate">Validate</string>
+    <string name="choose_adress">Choose your server</string>
+    <string name="adress">Adress</string>
+    <string name="connect">Connect</string>
+
 
 </resources>

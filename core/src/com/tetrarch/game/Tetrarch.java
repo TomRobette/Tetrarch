@@ -30,6 +30,7 @@ public class Tetrarch extends ApplicationAdapter {
 	public static OrthographicCamera cam;
 	public static Player player;
 	protected static String pseudo;
+	public static String adress;
 
 	@Override
 	public void create () {
@@ -136,7 +137,11 @@ public class Tetrarch extends ApplicationAdapter {
 	private void connectSocket() {
 		try {
 			Gdx.app.log("Debug", "1");
-			socket = IO.socket("http://192.168.1.43:8080");
+			if (adress!=null){
+				socket = IO.socket("http://"+adress+":8080");
+			}else{
+				socket = IO.socket("http://localhost:8080");
+			}
 			Gdx.app.log("Debug", "2");
 			socket.connect();
 			Gdx.app.log("Debug", "3");
