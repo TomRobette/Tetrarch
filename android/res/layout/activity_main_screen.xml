@@ -2,8 +2,82 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@mipmap/ic_banner_colored"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainScreenActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="731dp"
+        android:layout_height="255dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_banner_foreground" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="708dp"
+        android:layout_height="142dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+        <Button
+            android:id="@+id/btHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/secondary"
+            android:padding="@dimen/bt_padding"
+            android:text="@string/create_game"
+            android:textColor="@color/tertiary"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/secondary"
+            android:padding="@dimen/bt_padding"
+            android:text="@string/play"
+            android:textColor="@color/tertiary"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/secondary"
+            android:padding="@dimen/bt_padding"
+            android:text="@string/options"
+            android:textColor="@color/tertiary"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:text="@string/your_name"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout2" />
 
 </android.support.constraint.ConstraintLayout>

@@ -8,6 +8,9 @@
     <string name="choose_adress">Choose your server</string>
     <string name="adress">Adress</string>
     <string name="connect">Connect</string>
+    <string name="play">Connect to a game</string>
+    <string name="create_game">Host a game</string>
+    <string name="options">Options</string>
 
 
 </resources>
