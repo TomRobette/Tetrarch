@@ -1,5 +1,6 @@
 package com.tetrarch.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -35,8 +36,10 @@ public class Tetrarch extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		map = new TiledGameMap();
 		Gdx.app.log("Debug", "My name: " + pseudo);
-		Preferences prefs = Gdx.app.getPreferences("My Preferences");
-		prefs.putString("player_name", pseudo);
+		if(Gdx.app.getType().equals(Application.ApplicationType.Android)) {
+			Preferences prefs = Gdx.app.getPreferences("My Preferences");
+			prefs.putString("player_name", pseudo);
+		}
 //		map.addEntity(new Player("a", 800, 50, EntityType.PLAYER, map));
 		connectSocket();
 		configSocketEvents();
@@ -132,10 +135,13 @@ public class Tetrarch extends ApplicationAdapter {
 
 	private void connectSocket() {
 		try {
-			socket = IO.socket("http://localhost:8080");
+			Gdx.app.log("Debug", "1");
+			socket = IO.socket("http://192.168.1.43:8080");
+			Gdx.app.log("Debug", "2");
 			socket.connect();
+			Gdx.app.log("Debug", "3");
 		}catch (Exception e){
-			System.out.println(e);
+			System.out.println("Bruh "+e);
 		}
 	}
 
