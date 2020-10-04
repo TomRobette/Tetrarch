@@ -10,12 +10,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tetrarch.game.entities.EntityType;
@@ -48,6 +52,7 @@ public class Tetrarch extends ApplicationAdapter {
 	public final static int WIDTH = 720;
 	public final static int HEIGHT = 480;
 	private Touchpad touchpad;
+	private Button jumpButton;
 
 	@Override
 	public void create () {
@@ -77,16 +82,22 @@ public class Tetrarch extends ApplicationAdapter {
 
 		if (Gdx.app.getType().equals(Application.ApplicationType.Android)){
 			touchpad = new Touchpad(20, skin);
-			touchpad.setBounds(15, 15, 400, 400);
 			touchpad.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					float deltaX = ((Touchpad) actor).getKnobPercentX();
-					System.out.println("BRUH "+deltaX);
 					player.moveXByPrct(deltaX);
 				}
 			});
 			stage.addActor(touchpad);
+			jumpButton = new Button(skin);
+			jumpButton.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					player.jump = true;
+				}
+			} );
+			stage.addActor(jumpButton);
 		}
 		map = new TiledGameMap();
 	}
@@ -196,8 +207,12 @@ public class Tetrarch extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		if (touchpad!=null)
-			touchpad.setZIndex(20);
+		if (touchpad!=null) {
+			touchpad.setBounds(player.getX() - Gdx.graphics.getWidth() / 7, player.getY() - Gdx.graphics.getHeight() / 7, 100, 100);
+		}
+		if (jumpButton!=null) {
+			jumpButton.setBounds(player.getX() - Gdx.graphics.getWidth() / 7, player.getY() - Gdx.graphics.getHeight() / 7, 100, 100);
+		}
 		updateServer(Gdx.graphics.getDeltaTime());
 //		System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
 		Gdx.gl.glClearColor(0, 0, 0, 1);

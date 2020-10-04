@@ -16,8 +16,9 @@ public class Player extends Entity {
     private float speed = 0;
     private final static int JUMP_VELOCITY = 5;
     private String name;
-    public float multZoom = 3;
+    public double multZoom = 0.3;
     boolean keyPressed;
+    public boolean jump;
 
     Sprite image;
 
@@ -61,7 +62,6 @@ public class Player extends Entity {
 
     @Override
     public void update(float deltaTime, float gravity) {
-        boolean jump = false;
         if (id.equals(Tetrarch.player.id)){
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.UP)){
                 jump = true;
@@ -75,6 +75,7 @@ public class Player extends Entity {
                     this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
                 }
             }
+            jump=false;
         }
 
         super.update(deltaTime, gravity);
@@ -82,10 +83,10 @@ public class Player extends Entity {
         if (id.equals(Tetrarch.player.id)){
             keyPressed = false;
             if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
-                multZoom-=1;
+                multZoom-=0.1;
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.L)){
-                multZoom+=1;
+                multZoom+=0.1;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)){
                 keyPressed = true;
@@ -100,15 +101,15 @@ public class Player extends Entity {
             if (keyPressed){
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)){
                     if (sens==-1){
-                        acceleration();
+                        acceleration(1.3);
                     }else{
-                        decelerationOpposite();
+                        deceleration();
                     }
                 }else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)){
                     if (sens==1){
-                        acceleration();
+                        acceleration(1.3);
                     }else{
-                        decelerationOpposite();
+                        deceleration();
                     }
                 }
 
@@ -125,12 +126,22 @@ public class Player extends Entity {
 
     public void moveXByPrct(float sensF){
         if (id.equals(Tetrarch.player.id)){
-            int direction = 1;
             if (sensF<0){
-                direction=-1;
+                sensF*=-1;
+                sens = -1;
+                if (sens==-1){
+                    acceleration(1+sensF);
+                }else{
+                    deceleration();
+                }
+            }else{
+                sens = 1;
+                if (sens==1){
+                    acceleration(1+sensF);
+                }else{
+                    deceleration();
+                }
             }
-            sens = direction;
-            acceleration();
         }
     }
 
@@ -145,8 +156,7 @@ public class Player extends Entity {
             this.name = name;
     }
 
-    private void acceleration(){
-        double velocity = 1.3;
+    private void acceleration(double velocity){
         if (speed* velocity > MAX_SPEED){
             speed = MAX_SPEED;
         }else{
@@ -157,12 +167,12 @@ public class Player extends Entity {
         }
     }
 
-    private void decelerationOpposite(){
+    private void deceleration(){
         if (speed<=1 && speed >0){
             speed=0;
             sens=0;
         }else if (speed>1){
-            speed*=0.6;
+            speed*=0.65;
         }
     }
 
@@ -174,8 +184,7 @@ public class Player extends Entity {
             if (id.equals(Tetrarch.player.id)) {
                 Tetrarch.cam.position.set(pos.x, pos.y, 0);
                 if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
-                    Tetrarch.cam.viewportWidth = Gdx.graphics.getWidth() / multZoom;
-                    Tetrarch.cam.viewportHeight = Gdx.graphics.getHeight() / multZoom;
+                    Tetrarch.cam.zoom = (float) multZoom;
                 }
             }
         }
