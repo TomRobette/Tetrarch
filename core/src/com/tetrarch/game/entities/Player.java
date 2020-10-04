@@ -16,7 +16,8 @@ public class Player extends Entity {
     private float speed = 0;
     private final static int JUMP_VELOCITY = 5;
     private String name;
-    private float multZoom = 3;
+    public float multZoom = 3;
+    boolean keyPressed;
 
     Sprite image;
 
@@ -79,12 +80,12 @@ public class Player extends Entity {
         super.update(deltaTime, gravity);
 
         if (id.equals(Tetrarch.player.id)){
-            boolean keyPressed = false;
-            if (Gdx.input.isKeyPressed(Input.Keys.O)){
-                multZoom-=0.1;
+            keyPressed = false;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.O)){
+                multZoom-=1;
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.L)){
-                multZoom+=0.1;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.L)){
+                multZoom+=1;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)){
                 keyPressed = true;
@@ -101,35 +102,35 @@ public class Player extends Entity {
                     if (sens==-1){
                         acceleration();
                     }else{
-                        if (speed<=1 && speed >0){
-                            speed=0;
-                            sens=0;
-                        }else if (speed>1){
-                            speed*=0.6;
-                        }
+                        decelerationOpposite();
                     }
                 }else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)){
                     if (sens==1){
                         acceleration();
                     }else{
-                        if (speed<=1 && speed >0){
-                            speed=0;
-                            sens=0;
-                        }else if (speed>1){
-                            speed*=0.6;
-                        }
+                        decelerationOpposite();
                     }
                 }
 
-                moveX((int) (speed * sens * deltaTime));
             }else{
                 if (speed!=0){
-                    speed*=0.975;
+                    speed*=0.976;
                 }else{
                     sens=0;
                 }
-                moveX((int) (speed * sens * deltaTime));
             }
+            moveX((int) (speed * sens * deltaTime));
+        }
+    }
+
+    public void moveXByPrct(float sensF){
+        if (id.equals(Tetrarch.player.id)){
+            int direction = 1;
+            if (sensF<0){
+                direction=-1;
+            }
+            sens = direction;
+            acceleration();
         }
     }
 
@@ -153,6 +154,15 @@ public class Player extends Entity {
                 speed=10;
             }
             speed*= velocity;
+        }
+    }
+
+    private void decelerationOpposite(){
+        if (speed<=1 && speed >0){
+            speed=0;
+            sens=0;
+        }else if (speed>1){
+            speed*=0.6;
         }
     }
 

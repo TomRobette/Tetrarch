@@ -3,10 +3,21 @@ package com.tetrarch.game;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tetrarch.game.entities.EntityType;
 import com.tetrarch.game.entities.Player;
 import com.tetrarch.game.world.GameMap;
@@ -24,29 +35,65 @@ import io.socket.emitter.Emitter;
 public class Tetrarch extends ApplicationAdapter {
 	private final float UPDATE_TIME= 1/30f;
 	float timer;
-	SpriteBatch batch;
+	protected SpriteBatch batch;
+	Skin skin;
+	protected Stage stage;
+	private Viewport viewport;
 	private Socket socket;
-	GameMap map;
+	private GameMap map;
 	public static OrthographicCamera cam;
 	public static Player player;
 	protected static String pseudo;
 	public static String adress;
+	public final static int WIDTH = 720;
+	public final static int HEIGHT = 480;
+	private Touchpad touchpad;
 
 	@Override
 	public void create () {
+		initSkin();
 		batch = new SpriteBatch();
-		map = new TiledGameMap();
 		Gdx.app.log("Debug", "My name: " + pseudo);
 		if(Gdx.app.getType().equals(Application.ApplicationType.Android)) {
 			Preferences prefs = Gdx.app.getPreferences("My Preferences");
 			prefs.putString("player_name", pseudo);
 		}
-//		map.addEntity(new Player("a", 800, 50, EntityType.PLAYER, map));
 		connectSocket();
 		configSocketEvents();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		if (Gdx.app.getType().equals(Application.ApplicationType.Android)){
+			viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), cam);
+		}else{
+			viewport = new FitViewport(this.WIDTH, this.HEIGHT, cam);
+		}
+		viewport.apply();
+
 		cam.update();
+
+		stage = new Stage(viewport, batch);
+		Gdx.input.setInputProcessor(stage);
+
+		if (Gdx.app.getType().equals(Application.ApplicationType.Android)){
+			touchpad = new Touchpad(20, skin);
+			touchpad.setBounds(15, 15, 400, 400);
+			touchpad.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					float deltaX = ((Touchpad) actor).getKnobPercentX();
+					System.out.println("BRUH "+deltaX);
+					player.moveXByPrct(deltaX);
+				}
+			});
+			stage.addActor(touchpad);
+		}
+		map = new TiledGameMap();
+	}
+
+	private void initSkin(){
+		skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+		skin.addRegions(new TextureAtlas(Gdx.files.internal("default/skin/uiskin.atlas")));
 	}
 
 	public void configSocketEvents(){
@@ -136,15 +183,12 @@ public class Tetrarch extends ApplicationAdapter {
 
 	private void connectSocket() {
 		try {
-			Gdx.app.log("Debug", "1");
 			if (adress!=null){
 				socket = IO.socket("http://"+adress+":8080");
 			}else{
 				socket = IO.socket("http://localhost:8080");
 			}
-			Gdx.app.log("Debug", "2");
 			socket.connect();
-			Gdx.app.log("Debug", "3");
 		}catch (Exception e){
 			System.out.println("Bruh "+e);
 		}
@@ -152,7 +196,10 @@ public class Tetrarch extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		if (touchpad!=null)
+			touchpad.setZIndex(20);
 		updateServer(Gdx.graphics.getDeltaTime());
+//		System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -160,12 +207,18 @@ public class Tetrarch extends ApplicationAdapter {
 		cam.update();
 		map.update(Gdx.graphics.getDeltaTime());
 		map.render(cam, batch);
+
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
+
+
 	}
 
 	@Override
 	public void dispose () {
 		batch.dispose();
 		map.dispose();
+		stage.dispose();
 	}
 
 	public void updateServer(float dt){
